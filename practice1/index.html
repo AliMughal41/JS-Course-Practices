@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+  .container{
+    background-color: black;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+  }
+  .parent1{
+    height: 90%;
+    width: 80%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .child1{
+    height: 80%;
+    width: 45%;
+    background-color: rgb(214, 193, 193);
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+  }
+  .child1 h1{
+    font-size: 60px;
+    margin-top: 80px;
+    margin-left: 80px;
+  }
+  .child1 h4{
+   
+    margin-left: 80px;
+    margin-top: 2px;
+    font-weight: lighter;
+  }
+  .child1 h6{
+    margin-left: 80px;
+    margin-top: 40px;
+    font-size: 20px;
+    font-weight: lighter;
+  }
+  .child1 input{
+    margin-top: 5px;
+  }
+  .child1 input{
+margin-left: 80px;
+    flex-direction: row;
+    padding: 7px;
+    border-radius: 7px;
+    border: 1px  white
+    
+  }
+  
+ .child1 button{
+    padding: 7px;
+    border-radius: 7px;
+    background-color: rgb(67, 67, 230);
+    border: 1px  rgb(67, 67, 230);
+ }
+ 
+  .child2{
+    height: 80%;
+    width: 45%;
+    background-color: rgb(250, 244, 244);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .child2 input{
+    border: 2px solid rgb(88, 38, 38);
+  }
+
+  
+  
+</style>
+<body>
+  <div class="container">
+    
+<div class="parent1">
+    
+  <div class="child1">
+    <h1>
+        Build Better Products
+    </h1>
+    <h4>
+        Introducing a new way for your brand to reach the creative community.
+    </h4>
+    
+  
+  
+<div class="input">
+      <input type="text" placeholder="Enter Work Email">
+    <button>request demo</button>
+    <h6>
+        Trusted By:
+    </h6>
+    
+</div>
+  </div>
+  
+  <div class="child2">
+    <img src="./photo.avif" alt="Loading" class="image1" >
+    
+  </div>
+  
+</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    .parent{
+       
+        display: grid;
+grid-template-columns:  200px 1fr 150px;
+grid-template-rows: 80px 1fr 100px ;
+height: 100vh;
+width: 100%;
+
+
+ 
+    }
+    .header{
+       
+        background-color: rgb(222, 236, 20);
+        
+        grid-column: 1/4;
+
+       display: flex;
+        justify-content: center;
+        align-items: center;
+       
+    }
+   .sidebar{
+    background-color: rgb(247, 135, 135);
+    
+   }
+   .content{
+background-color: aquamarine;
+   }
+   .addbox{
+    background-color: rgb(183, 243, 86);
+   }
+.footer{
+    background-color: rgb(132, 132, 233);
+    grid-column: 1/4;
+}
+    /* .child3{
+        background-color: rgb(222, 236, 20);
+        grid-row: 2/3;
+        grid-column: 3/4;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .child4{
+        background-color: rgb(222, 236, 20);
+        grid-row: 3/4;
+        grid-column: 2/3;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    } */
+</style>
+<body>
+    <div class="parent">
+        <div class="header">
+Skill Bridge
+        </div>
+    <div class="sidebar">
+Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod, obcaecati cupiditate dolorum mollitia qui iste a vero, labore expedita facilis quaerat aut ab nostrum in, dignissimos totam non error eveniet.
+    </div>
+    
+<div class="content">
+Skill Bridge
+    </div>
+    <div class="addbox">
+Skill Bridge
+    </div>
+    <div class="footer">
+Skill Bridge
+    </div>
+    
+        <!-- <div class="child3">
+Skill Bridge
+        </div>
+    <div class="child4">
+Skill Bridge
+    </div> -->
+
+    </div>
+</body>
+</html>

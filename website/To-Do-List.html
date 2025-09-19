@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .menu-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .sidebar-section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-item.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .nav-item-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .nav-icon.red { background-color: #ff5252; }
+        .nav-icon.blue { background-color: #2196f3; }
+        .nav-icon.yellow { background-color: #ffc107; }
+
+        .nav-count {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .add-list-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .add-list-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .tags-section {
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        .tag-1 { background: #e3f2fd; color: #1976d2; }
+        .tag-2 { background: #fce4ec; color: #c2185b; }
+
+        .add-tag-btn {
+            color: #6c757d;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .add-tag-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            margin-bottom: 5px;
+        }
+
+        .footer-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .main-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .main-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .main-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-count {
+            background: #e9ecef;
+            color: #6c757d;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .add-task-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #6c757d;
+            transition: all 0.2s;
+        }
+
+        .add-task-btn:hover {
+            background: #e9ecef;
+        }
+
+        .main-body {
+            flex: 1;
+            padding: 20px 30px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            background: #f8f9fa;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            margin-right: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-checkbox.checked {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .task-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-title {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .task-list-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .task-subtask-count {
+            font-size: 11px;
+        }
+
+        .task-arrow {
+            color: #e9ecef;
+            font-size: 18px;
+        }
+
+        .priority-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .priority-high { background-color: #ff5252; }
+        .priority-medium { background-color: #ffc107; }
+        .priority-low { background-color: #4caf50; }
+
+        /* Right Panel */
+        .right-panel {
+            width: 300px;
+            background: #fff;
+            border-left: 1px solid #e9ecef;
+            padding: 30px;
+            display: none;
+        }
+
+        .right-panel.show {
+            display: block;
+        }
+
+        .panel-header {
+            margin-bottom: 30px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .subtasks-section {
+            margin-bottom: 30px;
+        }
+
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .subtask-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 3px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .subtask-text {
+            flex: 1;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .add-subtask-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .panel-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #ffb300;
+        }
+
+        .btn-danger {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                z-index: 999;
+                transition: left 0.3s;
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .right-panel {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                z-index: 999;
+                transition: right 0.3s;
+                height: 100vh;
+                overflow-y: auto;
+            }
+
+            .right-panel.show {
+                right: 0;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="menu-title">
+                    <span>☰</span> Menu
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search" id="searchInput" onkeyup="filterTodos()">
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">Tasks</div>
+                <div class="nav-item active" onclick="setActiveFilter('all')">
+                    <div class="nav-item-content">
+                        <span>📋</span>
+                        <span>Upcoming</span>
+                    </div>
+                    <span class="nav-count" id="upcomingCount">0</span>
+                </div>
+                <div class="nav-item" onclick="setActiveFilter('today')">
+                    <div class="nav-item-content">
+                        <span>📅</span>
+                        <span>Today</span>
+                    </div>
+                    <span class="nav-count" id="todayCount">0</span>
+                </div>
+                <div class="nav-item" onclick="setActiveFilter('calendar')">
+                    <div class="nav-item-content">
+                        <span>📆</span>
+                        <span>Calendar</span>
+                    </div>
+                </div>
+                <div class="nav-item" onclick="setActiveFilter('completed')">
+                    <div class="nav-item-content">
+                        <span>✅</span>
+                        <span>Sticky Wall</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">Lists</div>
+                <div class="nav-item" onclick="setActiveFilter('personal')">
+                    <div class="nav-item-content">
+                        <div class="nav-icon red"></div>
+                        <span>Personal</span>
+                    </div>
+                    <span class="nav-count" id="personalCount">0</span>
+                </div>
+                <div class="nav-item" onclick="setActiveFilter('work')">
+                    <div class="nav-item-content">
+                        <div class="nav-icon blue"></div>
+                        <span>Work</span>
+                    </div>
+                    <span class="nav-count" id="workCount">0</span>
+                </div>
+                <div class="nav-item" onclick="setActiveFilter('shopping')">
+                    <div class="nav-item-content">
+                        <div class="nav-icon yellow"></div>
+                        <span>List 1</span>
+                    </div>
+                    <span class="nav-count" id="shoppingCount">0</span>
+                </div>
+                <div class="add-list-btn" onclick="showAddCategoryModal()">
+                    <span>+</span>
+                    <span>Add New List</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section tags-section">
+                <div class="section-title">Tags</div>
+                <div id="tagsContainer">
+                    <span class="tag tag-1">Tag 1</span>
+                    <span class="tag tag-2">Tag 2</span>
+                    <span class="add-tag-btn">+ Add Tag</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="footer-btn">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </div>
+                <div class="footer-btn">
+                    <span>👤</span>
+                    <span>Sign out</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="main-header">
+                <div class="main-title">
+                    <h1 id="currentView">Today</h1>
+                    <span class="task-count" id="taskCount">0</span>
+                </div>
+                <div class="add-task-btn" onclick="openAddModal()">
+                    <span>+</span>
+                    <span>Add New Task</span>
+                </div>
+            </div>
+
+            <div class="main-body">
+                <div id="todoContainer"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel" id="rightPanel">
+            <div class="panel-header">
+                <div class="panel-title" id="panelTitle">Task:</div>
+                <button class="close-btn" onclick="closePanel()">&times;</button>
+            </div>
+
+            <form id="todoForm" onsubmit="saveTodo(event)">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="todoTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" id="todoDescription"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">List</label>
+                    <select class="form-select" id="todoCategory">
+                        <option value="Personal">Personal</option>
+                        <option value="Work">Work</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Health">Health</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Due date</label>
+                    <input type="date" class="form-input" id="todoDueDate">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select class="form-select" id="todoPriority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tags</label>
+                    <input type="text" class="form-input" id="todoTags" placeholder="Tag 1">
+                </div>
+
+                <div class="subtasks-section">
+                    <div class="form-label">Subtasks:</div>
+                    <div class="add-subtask-btn">
+                        <span>+</span>
+                        <span>Add New Subtask</span>
+                    </div>
+                    <div class="subtask-item">
+                        <div class="subtask-checkbox"></div>
+                        <span class="subtask-text">Subtask</span>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <button type="button" class="btn btn-danger" onclick="deleteTodo()">Delete Task</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for confirmations -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Action</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <p id="confirmMessage">Are you sure you want to delete this task?</p>
+            <div class="panel-footer" style="margin-top: 20px;">
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let todos = [];
+        let editingTodoId = null;
+        let currentFilter = 'all';
+        let confirmCallback = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            renderTodos();
+            updateCounts();
+            
+            // Add keyboard event listeners
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePanel();
+                    closeModal();
+                }
+            });
+        });
+
+        // Load sample data
+        function loadSampleData() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            
+            todos = [
+                {
+                    id: 1,
+                    title: "Research content ideas",
+                    description: "Find trending topics for next month's content calendar",
+                    category: "Work",
+                    priority: "medium",
+                    dueDate: today.toISOString().split('T')[0],
+                    completed: false,
+                    tags: ["content", "research"],
+                    subtasks: ["Check competitor content", "Analyze trending keywords"]
+                },
+                {
+                    id: 2,
+                    title: "Create a database of guest authors",
+                    description: "Build a comprehensive list of potential guest writers",
+                    category: "Work",
+                    priority: "high",
+                    dueDate: tomorrow.toISOString().split('T')[0],
+                    completed: false,
+                    tags: ["database", "authors"],
+                    subtasks: ["Research industry experts", "Collect contact information"]
+                },
+                {
+                    id: 3,
+                    title: "Review driver's license",
+                    description: "Check expiration date and renew if needed",
+                    category: "Personal",
+                    priority: "medium",
+                    dueDate: "",
+                    completed: false,
+                    tags: ["license", "renewal"],
+                    subtasks: []
+                },
+                {
+                    id: 4,
+                    title: "Consult accountant",
+                    description: "Schedule meeting for tax planning",
+                    category: "Personal",
+                    priority: "high",
+                    dueDate: "",
+                    completed: false,
+                    tags: ["tax", "meeting"],
+                    subtasks: []
+                },
+                {
+                    id: 5,
+                    title: "Print business card",
+                    description: "Design and print new business cards",
+                    category: "Work",
+                    priority: "low",
+                    dueDate: "",
+                    completed: false,
+                    tags: ["design", "printing"],
+                    subtasks: []
+                }
+            ];
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now() + Math.random();
+        }
+
+        // Set active filter
+        function setActiveFilter(filter) {
+            currentFilter = filter;
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Update main title
+            const titles = {
+                'all': 'Upcoming',
+                'today': 'Today',
+                'calendar': 'Calendar',
+                'completed': 'Completed',
+                'personal': 'Personal',
+                'work': 'Work',
+                'shopping': 'Shopping'
+            };
+            
+            document.getElementById('currentView').textContent = titles[filter] || filter;
+            renderTodos();
+        }
+
+        // Check if todo is for today
+        function isToday(dateString) {
+            if (!dateString) return false;
+            const today = new Date().toISOString().split('T')[0];
+            return dateString === today;
+        }
+
+        // Check if todo is overdue
+        function isOverdue(todo) {
+            if (!todo.dueDate || todo.completed) return false;
+            const today = new Date();
+            const dueDate = new Date(todo.dueDate);
+            return dueDate < today;
+        }
+
+        // Open add modal (right panel)
+        function openAddModal() {
+            editingTodoId = null;
+            document.getElementById('panelTitle').textContent = 'Task:';
+            document.getElementById('todoForm').reset();
+            document.getElementById('rightPanel').classList.add('show');
+        }
+
+        // Open edit panel
+        function openEditPanel(todoId) {
+            const todo = todos.find(t => t.id === todoId);
+            if (!todo) return;
+
+            editingTodoId = todoId;
+            document.getElementById('panelTitle').textContent = `Task: ${todo.title}`;
+            document.getElementById('todoTitle').value = todo.title;
+            document.getElementById('todoDescription').value = todo.description;
+            document.getElementById('todoCategory').value = todo.category;
+            document.getElementById('todoPriority').value = todo.priority;
+            document.getElementById('todoDueDate').value = todo.dueDate;
+            document.getElementById('todoTags').value = todo.tags ? todo.tags.join(', ') : '';
+            document.getElementById('rightPanel').classList.add('show');
+        }
+
+        // Close right panel
+        function closePanel() {
+            document.getElementById('rightPanel').classList.remove('show');
+            editingTodoId = null;
+        }
+
+        // Save todo
+        function saveTodo(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('todoTitle').value.trim();
+            const description = document.getElementById('todoDescription').value.trim();
+            const category = document.getElementById('todoCategory').value;
+            const priority = document.getElementById('todoPriority').value;
+            const dueDate = document.getElementById('todoDueDate').value;
+            const tags = document.getElementById('todoTags').value.split(',').map(t => t.trim()).filter(t => t);
+
+            if (!title) {
+                alert('Please enter a title for your task');
+                return;
+            }
+
+            const todoData = {
+                title,
+                description,
+                category,
+                priority,
+                dueDate,
+                tags,
+                completed: false,
+                subtasks: []
+            };
+
+            if (editingTodoId) {
+                // Update existing todo
+                const todoIndex = todos.findIndex(t => t.id === editingTodoId);
+                if (todoIndex !== -1) {
+                    todos[todoIndex] = { ...todos[todoIndex], ...todoData };
+                }
+            } else {
+                // Add new todo
+                todoData.id = generateId();
+                todoData.createdAt = new Date().toISOString();
+                todos.push(todoData);
+            }
+
+            closePanel();
+            renderTodos();
+            updateCounts();
+        }
+
+        // Toggle todo completion
+        function toggleTodo(todoId) {
+            const todo = todos.find(t => t.id === todoId);
+            if (todo) {
+                todo.completed = !todo.completed;
+                renderTodos();
+                updateCounts();
+            }
+        }
+
+        // Delete todo
+        function deleteTodo() {
+            if (!editingTodoId) return;
+            
+            confirmCallback = () => {
+                todos = todos.filter(t => t.id !== editingTodoId);
+                closePanel();
+                closeModal();
+                renderTodos();
+                updateCounts();
+            };
+            
+            document.getElementById('confirmMessage').textContent = 'Are you sure you want to delete this task? This action cannot be undone.';
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // Filter todos based on current filter
+        function getFilteredTodos() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filteredTodos = todos.filter(todo => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    todo.title.toLowerCase().includes(searchTerm) ||
+                    todo.description.toLowerCase().includes(searchTerm);
+
+                // Category filter
+                let matchesFilter = true;
+                switch (currentFilter) {
+                    case 'today':
+                        matchesFilter = isToday(todo.dueDate);
+                        break;
+                    case 'completed':
+                        matchesFilter = todo.completed;
+                        break;
+                    case 'personal':
+                        matchesFilter = todo.category.toLowerCase() === 'personal';
+                        break;
+                    case 'work':
+                        matchesFilter = todo.category.toLowerCase() === 'work';
+                        break;
+                    case 'shopping':
+                        matchesFilter = todo.category.toLowerCase() === 'shopping';
+                        break;
+                    case 'all':
+                    default:
+                        matchesFilter = true;
+                }
+
+                return matchesSearch && matchesFilter;
+            });
+
+            return filteredTodos;
+        }
+
+        // Render todos
+        function renderTodos() {
+            const container = document.getElementById('todoContainer');
+            const filteredTodos = getFilteredTodos();
+            
+            if (filteredTodos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No tasks found</h3>
+                        <p>Try adjusting your search or add a new task to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredTodos.map(todo => {
+                const overdue = isOverdue(todo);
+                const priorityDot = `<div class="priority-dot priority-${todo.priority}"></div>`;
+                
+                return `
+                    <div class="task-item ${todo.completed ? 'completed' : ''}" onclick="openEditPanel(${todo.id})">
+                        <div class="task-checkbox ${todo.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleTodo(${todo.id})">
+                            ${todo.completed ? '✓' : ''}
+                        </div>
+                        <div class="task-content">
+                            <div class="task-title ${todo.completed ? 'completed' : ''}">${todo.title}</div>
+                            <div class="task-meta">
+                                ${priorityDot}
+                                <span class="task-list-badge">${todo.category}</span>
+                                ${todo.subtasks && todo.subtasks.length > 0 ? `<span class="task-subtask-count">${todo.subtasks.length} subtasks</span>` : ''}
+                                ${todo.dueDate ? `<span class="${overdue ? 'overdue' : ''}">${formatDate(todo.dueDate)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="task-arrow">›</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const today = new Date();
+            
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            }
+            
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            
+            if (date.toDateString() === tomorrow.toDateString()) {
+                return 'Tomorrow';
+            }
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Update counts in sidebar
+        function updateCounts() {
+            const totalTasks = todos.filter(t => !t.completed).length;
+            const todayTasks = todos.filter(t => isToday(t.dueDate) && !t.completed).length;
+            const personalTasks = todos.filter(t => t.category.toLowerCase() === 'personal' && !t.completed).length;
+            const workTasks = todos.filter(t => t.category.toLowerCase() === 'work' && !t.completed).length;
+            const shoppingTasks = todos.filter(t => t.category.toLowerCase() === 'shopping' && !t.completed).length;
+
+            document.getElementById('upcomingCount').textContent = totalTasks;
+            document.getElementById('todayCount').textContent = todayTasks;
+            document.getElementById('personalCount').textContent = personalTasks;
+            document.getElementById('workCount').textContent = workTasks;
+            document.getElementById('shoppingCount').textContent = shoppingTasks;
+            document.getElementById('taskCount').textContent = getFilteredTodos().length;
+        }
+
+        // Filter todos (called by search input)
+        function filterTodos() {
+            renderTodos();
+            updateCounts();
+        }
+
+        // Show add category modal
+        function showAddCategoryModal() {
+            const categoryName = prompt('Enter new category name:');
+            if (categoryName && categoryName.trim()) {
+                const select = document.getElementById('todoCategory');
+                const option = document.createElement('option');
+                option.value = categoryName.trim();
+                option.textContent = categoryName.trim();
+                select.appendChild(option);
+                alert(`Category "${categoryName.trim()}" added successfully!`);
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            confirmCallback = null;
+        }
+
+        // Confirm action
+        function confirmAction() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+        }
+
+        // Mobile sidebar toggle (for responsive design)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        // Handle clicks outside panels to close them
+        document.addEventListener('click', function(e) {
+            const rightPanel = document.getElementById('rightPanel');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (rightPanel.classList.contains('show') && !rightPanel.contains(e.target) && !e.target.closest('.task-item') && !e.target.closest('.add-task-btn')) {
+                closePanel();
+            }
+        });
+
+        // Initial render
+        window.addEventListener('load', function() {
+            renderTodos();
+            updateCounts();
+        });
+    </script>
+</body>
+</html>

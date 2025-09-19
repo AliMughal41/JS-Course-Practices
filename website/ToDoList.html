@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow-To-Do List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+       
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background:  #2a2a2a;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FF6B6B ,  #FFC857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .counters {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .counter {
+            background: #333333;
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 2px solid #444444;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .counter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .counter-label {
+            font-size: 0.9rem;
+            color:  #b0b0b0;
+            margin-bottom: 5px;
+        }
+
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color:#FF6B6B;
+        }
+
+
+
+        /* section1 css */
+
+        .section1 {
+            background:  #2a2a2a;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #b0b0b0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #333333;
+            border: 2px solid #444444;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B6B;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #333333;
+            border: 2px solid #444444;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #FF6B6B;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #FF6B6B , #ff5252);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+
+
+        /* section2 css */
+
+        .section2 {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            background:  #2a2a2a;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: #ffffff;
+            min-width: 200px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            background:  #2a2a2a;
+            border: 2px solid #444444;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .task-sections {
+            display: grid;
+            gap: 30px;
+        }
+
+        .task-section {
+            background:  #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-count {
+            background: #FF6B6B;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .task-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .task-card {
+            background: #333333;
+            border: 2px solid #444444;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: #FF6B6B;
+        }
+
+        .task-card.completed {
+            opacity: 0.7;
+            background: #1a1a1a;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #444444;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .task-checkbox.checked {
+            background: #FF6B6B;
+            border-color: #FF6B6B;
+        }
+
+        .task-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #888888;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .task-due {
+            color:#b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .task-priority {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .task-priority.high {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .task-priority.medium {
+            background:  #FFC857;
+            color: #1a1a1a;
+        }
+
+        .task-priority.low {
+            background: #6BCB77;
+            color: white;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .task-btn {
+            background: none;
+            border: 2px solid #444444;
+            color: #b0b0b0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+        }
+
+        .task-btn:hover {
+            border-color: #FF6B6B;
+            color: #FF6B6B;
+        }
+
+        .task-edit-input {
+            background: #1a1a1a;
+            border: 2px solid #FF6B6B;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color:#ffffff;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888888;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .app-title {
+                font-size: 2rem;
+            }
+            
+            .counters {
+                gap: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .task-actions {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="app-title">TaskFlow</h1>
+            <div class="counters">
+                <div class="counter">
+                    <div class="counter-label">Active Tasks</div>
+                    <div class="counter-value" id="activeCounter">0</div>
+                </div>
+                <div class="counter">
+                    <div class="counter-label">Completed Tasks</div>
+                    <div class="counter-value" id="completedCounter">0</div>
+                </div>
+            </div>
+        </header>
+<!-- Add task section -->
+        <section class="section1">
+     <form id="taskForm">
+              <div class="form-row">
+                      <div class="form-group">
+                        <label for="taskTitle">Task Title *</label>
+                     <input type="text" id="taskTitle" class="form-input" required placeholder="Enter task title...">
+                    </div>
+                </div>
+           <div class="form-row">
+                    <div class="form-group">
+                  <label for="taskDue">Due Date</label>
+                        <input type="date" id="taskDue" class="form-input">
+            </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                <select id="taskPriority" class="form-select">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+              </select>
+                    </div>
+                </div>
+                 <!-- Description Feild -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="taskDescription">Task Description (Optional)</label>
+                <textarea id="taskDescription" class="form-input" placeholder="Enter task details..." rows="3"></textarea>
+            </div>
+        </div>
+
+       
+                <button type="submit" class="add-btn">Add Task</button>
+            </form>
+        </section>
+
+        <section class="section2">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search tasks...">
+            <select id="filterSelect" class="filter-select">
+                <option value="all">All Tasks</option>
+                <option value="active">Active Only</option>
+                <option value="completed">Completed Only</option>
+            </select>
+            <select id="sortSelect" class="filter-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="dueDate">By Due Date</option>
+                <option value="priority">By Priority</option>
+            </select>
+        </section>
+
+        <div class="task-sections">
+            <section class="task-section" id="activeSection">
+                <h2 class="section-title">
+                    Active Tasks
+                    <span class="section-count" id="activeSectionCount">0</span>
+                </h2>
+                <div class="task-list" id="activeTaskList">
+                    <div class="empty-state">No active tasks yet. Add one above!</div>
+                </div>
+            </section>
+
+            <section class="task-section" id="completedSection">
+                <h2 class="section-title">
+                    Completed Tasks
+                    <span class="section-count" id="completedSectionCount">0</span>
+                </h2>
+                <div class="task-list" id="completedTaskList">
+                    <div class="empty-state">No completed tasks yet.</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #000;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .search-input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 250px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .todo-list {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .todo-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .todo-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .todo-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .todo-title.completed {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .todo-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .todo-meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .priority-high {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffd93d;
+            color: black;
+        }
+
+        .priority-low {
+            background: #6bcf7f;
+            color: white;
+        }
+
+        .category-badge {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #495057;
+        }
+
+        .due-date {
+            color: #666;
+        }
+
+        .overdue {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            margin-left: auto;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                min-width: auto;
+            }
+
+            .todo-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .todo-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Todo List Manager</h1>
+            <p>Stay organized and productive</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTodos">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTodos">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTodos">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="overdueTodos">0</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openAddModal()">+ Add New Todo</button>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search todos..." onkeyup="filterTodos()">
+            <div class="filters">
+                <select class="filter-select" id="statusFilter" onchange="filterTodos()">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+                <select class="filter-select" id="priorityFilter" onchange="filterTodos()">
+                    <option value="">All Priorities</option>
+                    <option value="high">High Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                </select>
+                <select class="filter-select" id="categoryFilter" onchange="filterTodos()">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="todo-list">
+            <div id="todoContainer"></div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="todoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Todo</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="todoForm" onsubmit="saveTodo(event)">
+                <div class="form-group">
+                    <label class="form-label">Title *</label>
+                    <input type="text" class="form-input" id="todoTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" id="todoDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input" id="todoCategory">
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Health">Health</option>
+                    </select>
+                    <input type="text" class="form-input" id="customCategory" placeholder="Or enter custom category" style="margin-top: 10px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select class="form-input" id="todoPriority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" class="form-input" id="todoDueDate">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Todo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Delete</h2>
+                <button class="close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <p>Are you sure you want to delete this todo? This action cannot be undone.</p>
+            <div class="form-actions" style="margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage (simulating localStorage)
+        let todos = [];
+        let editingTodoId = null;
+        let deletingTodoId = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            updateCategoryFilter();
+            renderTodos();
+            updateStats();
+            
+            // Add keyboard event listeners
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    closeDeleteModal();
+                }
+            });
+        });
+
+        // Load sample data for first-time users
+        function loadSampleData() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            todos = [
+                {
+                    id: 1,
+                    title: "Complete project presentation",
+                    description: "Prepare slides and practice presentation for client meeting",
+                    category: "Work",
+                    priority: "high",
+                    dueDate: tomorrow.toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    title: "Buy groceries",
+                    description: "Milk, bread, eggs, vegetables",
+                    category: "Shopping",
+                    priority: "medium",
+                    dueDate: today.toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 3,
+                    title: "Schedule dentist appointment",
+                    description: "Regular checkup and cleaning",
+                    category: "Health",
+                    priority: "low",
+                    dueDate: nextWeek.toISOString().split('T')[0],
+                    completed: true,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 4,
+                    title: "Pay electricity bill",
+                    description: "Monthly utility payment",
+                    category: "Personal",
+                    priority: "high",
+                    dueDate: yesterday.toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                }
+            ];
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now() + Math.random();
+        }
+
+        // Get priority emoji and color
+        function getPriorityInfo(priority) {
+            const priorities = {
+                high: { emoji: '🔥', class: 'priority-high' },
+                medium: { emoji: '⚡', class: 'priority-medium' },
+                low: { emoji: '🌱', class: 'priority-low' }
+            };
+            return priorities[priority] || priorities.low;
+        }
+
+        // Check if todo is overdue
+        function isOverdue(todo) {
+            if (!todo.dueDate || todo.completed) return false;
+            const today = new Date();
+            const dueDate = new Date(todo.dueDate);
+            return dueDate < today;
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        // Open add modal
+        function openAddModal() {
+            editingTodoId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Todo';
+            document.getElementById('todoForm').reset();
+            document.getElementById('todoModal').classList.add('show');
+        }
+
+        // Open edit modal
+        function openEditModal(todoId) {
+            const todo = todos.find(t => t.id === todoId);
+            if (!todo) return;
+
+            editingTodoId = todoId;
+            document.getElementById('modalTitle').textContent = 'Edit Todo';
+            document.getElementById('todoTitle').value = todo.title;
+            document.getElementById('todoDescription').value = todo.description;
+            document.getElementById('todoCategory').value = todo.category;
+            document.getElementById('todoPriority').value = todo.priority;
+            document.getElementById('todoDueDate').value = todo.dueDate;
+            document.getElementById('todoModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('todoModal').classList.remove('show');
+            editingTodoId = null;
+        }
+
+        // Save todo
+        function saveTodo(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('todoTitle').value.trim();
+            const description = document.getElementById('todoDescription').value.trim();
+            const customCategory = document.getElementById('customCategory').value.trim();
+            const category = customCategory || document.getElementById('todoCategory').value;
+            const priority = document.getElementById('todoPriority').value;
+            const dueDate = document.getElementById('todoDueDate').value;
+
+            if (!title) {
+                alert('Please enter a title for your todo');
+                return;
+            }
+
+            const todoData = {
+                title,
+                description,
+                category,
+                priority,
+                dueDate,
+                completed: false
+            };
+
+            if (editingTodoId) {
+                // Update existing todo
+                const todoIndex = todos.findIndex(t => t.id === editingTodoId);
+                if (todoIndex !== -1) {
+                    todos[todoIndex] = { ...todos[todoIndex], ...todoData };
+                }
+            } else {
+                // Add new todo
+                todoData.id = generateId();
+                todoData.createdAt = new Date().toISOString();
+                todos.push(todoData);
+            }
+
+            // Add custom category to filter if it doesn't exist
+            if (customCategory) {
+                updateCategoryFilter();
+            }
+
+            closeModal();
+            renderTodos();
+            updateStats();
+        }
+
+        // Toggle todo completion
+        function toggleTodo(todoId) {
+            const todo = todos.find(t => t.id === todoId);
+            if (todo) {
+                todo.completed = !todo.completed;
+                renderTodos();
+                updateStats();
+            }
+        }
+
+        // Open delete modal
+        function openDeleteModal(todoId) {
+            deletingTodoId = todoId;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingTodoId = null;
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (deletingTodoId) {
+                todos = todos.filter(t => t.id !== deletingTodoId);
+                closeDeleteModal();
+                renderTodos();
+                updateStats();
+                updateCategoryFilter();
+            }
+        }
+
+        // Update category filter options
+        function updateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categories = [...new Set(todos.map(t => t.category))];
+            
+            // Clear existing options except "All Categories"
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            
+            // Add category options
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Filter todos
+        function filterTodos() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            let filteredTodos = todos.filter(todo => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    todo.title.toLowerCase().includes(searchTerm) ||
+                    todo.description.toLowerCase().includes(searchTerm);
+
+                // Status filter
+                let matchesStatus = true;
+                if (statusFilter === 'completed') {
+                    matchesStatus = todo.completed;
+                } else if (statusFilter === 'pending') {
+                    matchesStatus = !todo.completed;
+                } else if (statusFilter === 'overdue') {
+                    matchesStatus = isOverdue(todo);
+                }
+
+                // Priority filter
+                const matchesPriority = !priorityFilter || todo.priority === priorityFilter;
+
+                // Category filter
+                const matchesCategory = !categoryFilter || todo.category === categoryFilter;
+
+                return matchesSearch && matchesStatus && matchesPriority && matchesCategory;
+            });
+
+            renderTodos(filteredTodos);
+        }
+
+        // Render todos
+        function renderTodos(todosToRender = todos) {
+            const container = document.getElementById('todoContainer');
+            
+            if (todosToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No todos found</h3>
+                        <p>Try adjusting your filters or add a new todo to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = todosToRender.map(todo => {
+                const priorityInfo = getPriorityInfo(todo.priority);
+                const overdue = isOverdue(todo);
+                
+                return `
+                    <div class="todo-item">
+                        <input type="checkbox" class="todo-checkbox" 
+                               ${todo.completed ? 'checked' : ''} 
+                               onchange="toggleTodo(${todo.id})">
+                        <div class="todo-content">
+                            <div class="todo-title ${todo.completed ? 'completed' : ''}">${todo.title}</div>
+                            ${todo.description ? `<div class="todo-description">${todo.description}</div>` : ''}
+                            <div class="todo-meta">
+                                <span class="priority-badge ${priorityInfo.class}">
+                                    ${priorityInfo.emoji} ${todo.priority.toUpperCase()}
+                                </span>
+                                <span class="category-badge">${todo.category}</span>
+                                ${todo.dueDate ? `<span class="due-date ${overdue ? 'overdue' : ''}">
+                                    ${overdue ? '⚠️ Overdue: ' : '📅 '}${formatDate(todo.dueDate)}
+                                </span>` : ''}
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="openEditModal(${todo.id})">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${todo.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(t => t.completed).length;
+            const pending = todos.filter(t => !t.completed).length;
+            const overdue = todos.filter(t => isOverdue(t)).length;
+
+            document.getElementById('totalTodos').textContent = total;
+            document.getElementById('completedTodos').textContent = completed;
+            document.getElementById('pendingTodos').textContent = pending;
+            document.getElementById('overdueTodos').textContent = overdue;
+        }
+    </script>
+</body>
+</html>
